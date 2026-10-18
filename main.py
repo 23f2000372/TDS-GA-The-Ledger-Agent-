@@ -113,16 +113,13 @@ def answer_question(question):
         month = int(numeric_month.group(1))
 
     if year or month:
-    filtered = []
-
-    for o in rows:
-        dt = datetime.fromisoformat(
-            o["created_at"].replace("Z", "+00:00")
-        )
-
-        # Use the assignment's business timezone
+        filtered = []
+        for o in rows:
+            dt = datetime.fromisoformat(
+                o["created_at"].replace("Z", "+00:00")
+            )
+            # Use the assignment's business timezone
         dt = dt.astimezone(BUSINESS_TZ)
-
         if year and dt.year != year:
             continue
 
@@ -130,8 +127,7 @@ def answer_question(question):
             continue
 
         filtered.append(o)
-
-    rows = filtered
+        rows = filtered
 
     # Ranking questions
     if re.search(r"\b(top|highest|most|best|largest|maximum)\b", q):
