@@ -114,19 +114,18 @@ def answer_question(question):
 
     if year or month:
         filtered = []
+        
         for o in rows:
             dt = datetime.fromisoformat(
                 o["created_at"].replace("Z", "+00:00")
             )
-            # Use the assignment's business timezone
-        dt = dt.astimezone(BUSINESS_TZ)
-        if year and dt.year != year:
-            continue
-
-        if month and dt.month != month:
-            continue
-
-        filtered.append(o)
+            dt = dt.astimezone(BUSINESS_TZ)
+            if year and dt.year != year:
+                continue
+            if month and dt.month != month:
+                continue
+            
+            filtered.append(o)
         rows = filtered
 
     # Ranking questions
