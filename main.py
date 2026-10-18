@@ -7,6 +7,9 @@ from collections import defaultdict, Counter
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from zoneinfo import ZoneInfo
+
+BUSINESS_TZ = ZoneInfo("Asia/Kolkata")
 
 # ---------- LOAD DATA ----------
 with open("all_orders.json") as f:
@@ -110,15 +113,25 @@ def answer_question(question):
         month = int(numeric_month.group(1))
 
     if year or month:
-        filtered = []
-        for o in rows:
-            dt = datetime.fromisoformat(o["created_at"].replace("Z", "+00:00"))
-            if year and dt.year != year:
-                continue
-            if month and dt.month != month:
-                continue
-            filtered.append(o)
-        rows = filtered
+    filtered = []
+
+    for o in rows:
+        dt = datetime.fromisoformat(
+            o["created_at"].replace("Z", "+00:00")
+        )
+
+        # Use the assignment's business timezone
+        dt = dt.astimezone(BUSINESS_TZ)
+
+        if year and dt.year != year:
+            continue
+
+        if month and dt.month != month:
+            continue
+
+        filtered.append(o)
+
+    rows = filtered
 
     # Ranking questions
     if re.search(r"\b(top|highest|most|best|largest|maximum)\b", q):
