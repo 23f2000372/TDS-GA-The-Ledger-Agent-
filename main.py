@@ -151,9 +151,8 @@ def answer_question(question):
 
     # Count questions
     if re.search(r"\b(how many|number of|count|quantity of orders)\b", q):
-        if "customer" in q and not any(norm(c) in q for c in CUSTOMERS):
-            counts = Counter(o["customer"] for o in rows)
-            return len(counts)
+        if re.search(r"\b(customers?|clients?)\b", q):
+            return len({o["customer"] for o in rows})
         return len(rows)
 
     # Average questions
